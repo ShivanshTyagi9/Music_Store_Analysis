@@ -10,4 +10,8 @@ FROM invoice
 GROUP BY billing_country
 ORDER BY billing_country DESC;
 
--- Q3. 
+-- Q3. What are top 3 values of total invoices?
+SELECT total 
+FROM invoice
+ORDER BY total DESC
+LIMIT 3;
