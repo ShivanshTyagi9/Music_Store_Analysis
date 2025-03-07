@@ -96,3 +96,31 @@ SELECT name, milliseconds
 FROM track
 WHERE milliseconds > (SELECT AVG(milliseconds) FROM track)
 ORDER BY milliseconds DESC;
+
+
+-- Advance
+-- Q1. Find how much amount spent by each customer on artists? Write a query to return customer name, artist name and total spent.
+
+-- Creating a temperory table to get information about the total sales of each artist and sorting them to find the best selling artist.
+WITH best_selling_artist AS(
+	SELECT artist.artist_id as artist_id, artist.name AS artist_name,
+	SUM(invoice_line.unit_price * invoice_line.quantity) AS total_sales
+	FROM invoice_line
+	JOIN track ON invoice_line.track_id = track.track_id
+	JOIN album ON track.album_id = album.album_id
+	JOIN artist ON album.artist_id = artist.artist_id
+	GROUP BY artist.artist_id
+	ORDER BY total_sales DESC
+	LIMIT 1
+)
+
+SELECT c.customer_id, c.first_name, c.last_name, bsa.artist_name,
+SUM(il.unit_price * il.quantity) AS amount_spent
+FROM invoice i
+JOIN customer AS c ON c.customer_id = i.customer_id
+JOIN invoice_line AS il ON il.invoice_id = i.invoice_id
+JOIN track AS t ON t.track_id = il.track_id
+JOIN album AS alb ON alb.album_id = t.album_id
+JOIN best_selling_artist AS bsa ON bsa.artist_id = alb.artist_id      -- extracting the purchase by customers only for the id of the best selling artist.
+GROUP BY 1,2,3,4
+ORDER BY 5 DESC;
