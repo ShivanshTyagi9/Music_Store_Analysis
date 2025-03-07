@@ -124,3 +124,4 @@ JOIN album AS alb ON alb.album_id = t.album_id
 JOIN best_selling_artist AS bsa ON bsa.artist_id = alb.artist_id      -- extracting the purchase by customers only for the id of the best selling artist.
 GROUP BY 1,2,3,4
 ORDER BY 5 DESC;
+-- DONE
